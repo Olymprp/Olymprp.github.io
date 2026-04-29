@@ -521,7 +521,7 @@ tbody tr { animation: fadeIn 0.2s ease both; }
 
 <!-- TOP BAR -->
 <div class="topbar">
-  <div class="topbar-logo">📋 <span>Olymp</span>&nbsp;Gesetzbuch</div>
+  <div class="topbar-logo"> <span>Olymp</span>&nbsp;Gesetzbuch</div>
   <div class="topbar-stat">
     <div class="dot"></div>
     <strong id="total-count">0</strong> Gesetze
@@ -582,10 +582,25 @@ tbody tr { animation: fadeIn 0.2s ease both; }
     <button class="bottombar-del" id="btn-del" title="Auswahl aufheben">🗑</button>
     <div class="sel-pill"><strong id="bb-count">0</strong> ausgewählt</div>
     <button class="bottombar-copy" id="btn-copy">📋 Kopieren</button>
+    <div class="bb-wanted-wrap">
+      <div class="bb-wanted-label">Wanteds</div>
+      <div class="bb-stars-row">
+        <span id="wstar1" class="bb-star">★</span>
+        <span id="wstar2" class="bb-star">★</span>
+        <span id="wstar3" class="bb-star">★</span>
+        <span id="wstar4" class="bb-star">★</span>
+        <span id="wstar5" class="bb-star">★</span>
+        <span id="wstar-num" class="sel-pill">0/5</span>
+      </div>
+    </div>
+    <div class="bb-cap-pill" id="bb-cap-pill">⚠ Wanted-Cap erreicht</div>
   </div>
   <div class="bb-preview-wrap">
     <div class="bb-preview-label">Ausgewählt:</div>
     <div class="bb-preview-content" id="bb-preview">—</div>
+  </div>
+  <div class="bottombar-info">
+    <label>Gesamtstrafe:</label> <span id="bb-total-geld">0 $</span>
   </div>
 </div>
 </div>
@@ -855,6 +870,10 @@ function updateBottomBar() {
   const preview = selLaws.length > 0 ? selLaws.map(l => l.para).join(', ') : '—';
   document.getElementById('bb-preview').textContent = preview;
 
+  // Geldsumme berechnen
+  const totalGeld = selLaws.reduce((a, l) => a + (l.geld || 0), 0);
+  document.getElementById('bb-total-geld').textContent = totalGeld > 0 ? totalGeld.toLocaleString('de-DE') + ' $' : '0 $';
+
   // Wanted-Sterne aktualisieren — maximal 5 anzeigen, egal wie viele gewählt
   const rawWanted = getTotalWanted();
   const totalWanted = Math.min(rawWanted, MAX_WANTED);
@@ -910,3 +929,4 @@ updateBottomBar();
 </script>
 </body>
 </html>
+
