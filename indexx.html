@@ -1,0 +1,912 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gesetzbuch — Olymp RP</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Syne:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0a0b0d;
+  --surface: #111318;
+  --surface2: #181b22;
+  --surface3: #1e222c;
+  --border: #252a36;
+  --border2: #2e3444;
+  --text: #e8ecf4;
+  --text2: #8b93a8;
+  --text3: #555d72;
+  --accent: #3b82f6;
+  --accent2: #1d4ed8;
+  --green: #22c55e;
+  --red: #ef4444;
+  --yellow: #eab308;
+  --orange: #f97316;
+  --purple: #a855f7;
+  --stgb: #ef4444;
+  --btmg: #a855f7;
+  --waffg: #f97316;
+  --stvo: #3b82f6;
+  --zgb: #22c55e;
+  --star: #f59e0b;
+  --row-hover: rgba(59,130,246,0.06);
+  --selected-bg: rgba(59,130,246,0.1);
+  --selected-border: rgba(59,130,246,0.4);
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Syne', sans-serif;
+  min-height: 100vh;
+  overflow-x: hidden;
+  padding-bottom: 70px;
+}
+
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: var(--surface); }
+::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--text3); }
+
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  padding: 0 20px;
+  height: 52px;
+  display: flex;
+  align-items: center;
+  gap: 28px;
+  backdrop-filter: blur(12px);
+}
+
+.topbar-logo {
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  color: var(--text2);
+  text-transform: uppercase;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.topbar-logo span { color: var(--accent); }
+
+.topbar-stat {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  color: var(--text2);
+  border-left: 1px solid var(--border);
+  padding-left: 20px;
+}
+.topbar-stat strong { color: var(--text); font-weight: 600; }
+.topbar-stat .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--accent); }
+.topbar-stat .dot.green { background: var(--green); }
+.topbar-stat .dot.yellow { background: var(--yellow); }
+.topbar-stat .dot.red { background: var(--red); }
+
+.topbar-right {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.icon-btn {
+  width: 34px; height: 34px;
+  background: var(--surface3);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text2);
+  transition: all 0.15s;
+  font-size: 14px;
+}
+.icon-btn:hover { background: var(--border); color: var(--text); }
+.icon-btn.active { background: var(--accent2); border-color: var(--accent); color: #fff; }
+
+.toolbar {
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  padding: 10px 20px;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.search-wrap {
+  flex: 1;
+  min-width: 220px;
+  max-width: 380px;
+  position: relative;
+}
+.search-wrap svg {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text3);
+  pointer-events: none;
+}
+.search-wrap input {
+  width: 100%;
+  background: var(--surface3);
+  border: 1px solid var(--border2);
+  color: var(--text);
+  padding: 8px 12px 8px 36px;
+  border-radius: 7px;
+  font-size: 13px;
+  font-family: 'Syne', sans-serif;
+  outline: none;
+  transition: border-color 0.15s;
+}
+.search-wrap input::placeholder { color: var(--text3); }
+.search-wrap input:focus { border-color: var(--accent); }
+
+.filter-select {
+  background: var(--surface3);
+  border: 1px solid var(--border2);
+  color: var(--text2);
+  padding: 8px 28px 8px 12px;
+  border-radius: 7px;
+  font-size: 12px;
+  font-family: 'Syne', sans-serif;
+  outline: none;
+  cursor: pointer;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23555d72'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  transition: border-color 0.15s;
+}
+.filter-select:focus { border-color: var(--accent); }
+
+.main { padding: 0; }
+.table-wrap { overflow-x: auto; }
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+thead th {
+  background: var(--surface2);
+  border-bottom: 1px solid var(--border);
+  padding: 10px 16px;
+  text-align: left;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text3);
+  white-space: nowrap;
+  position: sticky;
+  top: 52px;
+  z-index: 10;
+}
+thead th:first-child { padding-left: 20px; width: 100px; }
+thead th.right { text-align: right; }
+
+tbody tr {
+  border-bottom: 1px solid var(--border);
+  transition: background 0.1s;
+  cursor: pointer;
+}
+tbody tr:hover { background: var(--row-hover); }
+tbody tr.selected {
+  background: var(--selected-bg);
+  border-left: 3px solid var(--accent);
+}
+
+
+
+td {
+  padding: 11px 16px;
+  vertical-align: middle;
+  color: var(--text);
+  white-space: nowrap;
+}
+td:first-child { padding-left: 20px; }
+
+.para {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text2);
+}
+
+.law-name {
+  font-weight: 600;
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 220px;
+}
+
+.law-tag {
+  font-size: 10px;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: 4px;
+  letter-spacing: 0.06em;
+  flex-shrink: 0;
+}
+.tag-stgb { background: rgba(239,68,68,0.15); color: var(--stgb); border: 1px solid rgba(239,68,68,0.2); }
+.tag-btmg { background: rgba(168,85,247,0.15); color: var(--btmg); border: 1px solid rgba(168,85,247,0.2); }
+.tag-waffg { background: rgba(249,115,22,0.15); color: var(--waffg); border: 1px solid rgba(249,115,22,0.2); }
+.tag-stvo { background: rgba(59,130,246,0.15); color: var(--stvo); border: 1px solid rgba(59,130,246,0.2); }
+.tag-zgb { background: rgba(34,197,94,0.15); color: var(--zgb); border: 1px solid rgba(34,197,94,0.2); }
+
+.star-fav {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--text3);
+  font-size: 14px;
+  padding: 0;
+  transition: color 0.15s, transform 0.15s;
+  line-height: 1;
+  flex-shrink: 0;
+}
+.star-fav:hover { color: var(--yellow); transform: scale(1.2); }
+.star-fav.active { color: var(--yellow); }
+
+.anmerkung {
+  color: var(--text3);
+  font-size: 12px;
+  max-width: 240px;
+  white-space: normal;
+  line-height: 1.4;
+}
+.anmerkung:empty::before { content: '—'; }
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 9px;
+  border-radius: 5px;
+  font-size: 11px;
+  font-weight: 600;
+}
+.badge-yes { background: rgba(34,197,94,0.15); color: var(--green); border: 1px solid rgba(34,197,94,0.2); }
+.badge-no { background: rgba(255,255,255,0.04); color: var(--text3); border: 1px solid var(--border); }
+
+.stars {
+  color: var(--star);
+  font-size: 12px;
+  letter-spacing: 1px;
+  min-width: 70px;
+}
+.stars.none { color: var(--text3); font-size: 11px; font-family: 'JetBrains Mono', monospace; }
+
+.geldstrafe {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--green);
+  text-align: right;
+}
+.geldstrafe.none { color: var(--text3); }
+
+/* BOTTOM BAR */
+.bottombar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: var(--surface);
+  border-top: 1px solid var(--border);
+  padding: 12px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  z-index: 100;
+}
+
+.bottombar-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.bottombar-del {
+  background: var(--surface3);
+  border: 1px solid var(--border2);
+  color: var(--red);
+  width: 36px; height: 36px;
+  border-radius: 6px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  flex-shrink: 0;
+  transition: background 0.15s;
+}
+.bottombar-del:hover { background: rgba(239,68,68,0.1); }
+
+.sel-pill {
+  background: var(--surface3);
+  border: 1px solid var(--border2);
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 12px;
+  color: var(--text2);
+  font-family: 'JetBrains Mono', monospace;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.sel-pill strong { color: var(--text); font-weight: 600; }
+
+.bottombar-copy {
+  background: var(--surface3);
+  border: 1px solid var(--border2);
+  color: var(--text2);
+  flex: 0 0 auto;
+  width: 110px;
+  height: 34px;
+  border-radius: 6px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-family: 'Syne', sans-serif;
+  gap: 6px;
+  transition: background 0.15s;
+  white-space: nowrap;
+}
+.bottombar-copy:hover { background: var(--border); color: var(--text); }
+
+.bb-preview-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  width: 100%;
+}
+.bb-preview-label {
+  font-size: 9px;
+  color: var(--text3);
+  font-family: 'JetBrains Mono', monospace;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-weight: 600;
+}
+.bb-preview-content {
+  font-size: 10px;
+  color: var(--text2);
+  font-family: 'JetBrains Mono', monospace;
+  padding: 6px 8px;
+  background: var(--surface3);
+  border: 1px solid var(--border2);
+  border-radius: 4px;
+  height: 32px;
+  overflow-y: auto;
+  line-height: 1.2;
+  width: 100%;
+}
+
+.bottombar-info {
+  display: flex;
+  gap: 16px;
+  font-size: 12px;
+  color: var(--text2);
+  font-family: 'JetBrains Mono', monospace;
+  flex-shrink: 0;
+}
+.bottombar-info span { color: var(--text); font-weight: 600; }
+.bottombar-info label { color: var(--text3); font-size: 11px; }
+
+/* WANTED STARS IN BOTTOMBAR */
+.bb-wanted-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  flex-shrink: 0;
+}
+.bb-wanted-label {
+  font-size: 10px;
+  color: var(--text3);
+  font-family: 'JetBrains Mono', monospace;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+.bb-stars-row {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+}
+.bb-star {
+  font-size: 15px;
+  color: var(--text3);
+  opacity: 0.25;
+  transition: opacity 0.2s, color 0.2s, transform 0.2s;
+  line-height: 1;
+}
+.bb-star.on {
+  color: var(--star);
+  opacity: 1;
+  transform: scale(1.1);
+}
+/* Cap warning pill */
+.bb-cap-pill {
+  display: none;
+  align-items: center;
+  gap: 5px;
+  background: rgba(239,68,68,0.12);
+  border: 1px solid rgba(239,68,68,0.25);
+  border-radius: 6px;
+  padding: 3px 9px;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--red);
+  font-family: 'JetBrains Mono', monospace;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.bb-cap-pill.show { display: flex; }
+
+.toast {
+  position: fixed;
+  bottom: 80px;
+  left: 50%;
+  transform: translateX(-50%) translateY(20px);
+  background: var(--green);
+  color: #000;
+  padding: 8px 18px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 700;
+  opacity: 0;
+  pointer-events: none;
+  transition: all 0.25s;
+  z-index: 200;
+  white-space: nowrap;
+}
+.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+.empty-state {
+  text-align: center;
+  padding: 60px 20px;
+  color: var(--text3);
+  font-size: 14px;
+}
+.empty-state svg { margin-bottom: 16px; opacity: 0.3; }
+
+@keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
+tbody tr { animation: fadeIn 0.2s ease both; }
+
+.sel-pill {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--surface3);
+  border: 1px solid var(--border2);
+  border-radius: 7px;
+  padding: 4px 12px;
+  font-size: 12px;
+  color: var(--text2);
+  font-family: 'JetBrains Mono', monospace;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.sel-pill strong { color: var(--accent); }
+
+.subgroup-row td {
+  background: var(--surface2);
+  color: var(--text3);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 6px 20px;
+  border-bottom: 1px solid var(--border);
+}
+</style>
+</head>
+<body>
+
+<!-- TOP BAR -->
+<div class="topbar">
+  <div class="topbar-logo">📋 <span>Olymp</span>&nbsp;Gesetzbuch</div>
+  <div class="topbar-stat">
+    <div class="dot"></div>
+    <strong id="total-count">0</strong> Gesetze
+  </div>
+  <div class="topbar-stat">
+    <div class="dot yellow"></div>
+    <strong id="fav-count">0</strong> Favoriten
+  </div>
+  <div class="topbar-stat">
+    <div class="dot green"></div>
+    <strong id="sel-count">0</strong> Ausgewählt
+  </div>
+  <div class="topbar-right">
+    <button class="icon-btn active" id="btn-table" title="Tabellenansicht">☰</button>
+    <button class="icon-btn" id="btn-grid" title="Kartenansicht">⊞</button>
+    <button class="icon-btn" id="btn-fav" title="Nur Favoriten">★</button>
+    <button class="icon-btn" id="btn-clear-sel" title="Auswahl aufheben">↺</button>
+  </div>
+</div>
+
+<!-- TOOLBAR -->
+<div class="toolbar">
+  <div class="search-wrap">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+    <input type="text" id="search" placeholder="Suche nach Gesetz, Name oder Paragraph..." autocomplete="off">
+  </div>
+</div>
+
+<!-- MAIN TABLE -->
+<div class="main">
+  <div class="table-wrap">
+    <table id="law-table">
+      <thead>
+        <tr>
+          <th>§</th>
+          <th>Name</th>
+          <th>Anmerkung</th>
+          <th>FIB</th>
+          <th>Gericht</th>
+          <th>Strafregister</th>
+          <th>Kaution</th>
+          <th class="right">Geldstrafe</th>
+          <th>Freiheitsstrafe</th>
+        </tr>
+      </thead>
+      <tbody id="law-tbody"></tbody>
+    </table>
+    <div class="empty-state" id="empty-state" style="display:none">
+      <svg width="48" height="48" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+      <div>Keine Gesetze gefunden</div>
+    </div>
+  </div>
+</div>
+
+<!-- BOTTOM BAR -->
+<div class="bottombar" id="bottombar">
+  <div class="bottombar-row">
+    <button class="bottombar-del" id="btn-del" title="Auswahl aufheben">🗑</button>
+    <div class="sel-pill"><strong id="bb-count">0</strong> ausgewählt</div>
+    <button class="bottombar-copy" id="btn-copy">📋 Kopieren</button>
+  </div>
+  <div class="bb-preview-wrap">
+    <div class="bb-preview-label">Ausgewählt:</div>
+    <div class="bb-preview-content" id="bb-preview">—</div>
+  </div>
+</div>
+</div>
+
+<div class="toast" id="toast">✓ In Zwischenablage kopiert</div>
+
+<script>
+const LAWS = [
+  // StGB - Allgemein
+  { para:"§ 1 StGB", name:"Körperverletzung", tag:"stgb", group:"StGB Delikte", subgroup:"Allgemeine Delikte", geld:25000, stars:1, anmerkung:"Antragsdelikt", fib:false, gericht:false, strafregister:false, wanted:false },
+  { para:"§ 1a StGB", name:"Gefährliche Körperverletzung", tag:"stgb", group:"StGB Delikte", subgroup:"Allgemeine Delikte", geld:40000, stars:2, anmerkung:"Antragsdelikt & Entzug Waffenlizenz", fib:false, gericht:false, strafregister:false, wanted:false },
+  { para:"§ 2 StGB", name:"Mord", tag:"stgb", group:"StGB Delikte", subgroup:"Allgemeine Delikte", geld:100000, stars:5, anmerkung:"Entzug Waffenlizenz", fib:true, gericht:true, strafregister:false, wanted:true },
+  { para:"§ 3 StGB", name:"Totschlag", tag:"stgb", group:"StGB Delikte", subgroup:"Allgemeine Delikte", geld:70000, stars:4, anmerkung:"Entzug Waffenlizenz", fib:false, gericht:true, strafregister:false, wanted:true },
+  { para:"§ 5 StGB", name:"Geiselnahme", tag:"stgb", group:"StGB Delikte", subgroup:"Allgemeine Delikte", geld:80000, stars:3, anmerkung:"Entzug Waffenlizenz", fib:false, gericht:true, strafregister:false, wanted:true },
+  { para:"§ 5a StGB", name:"Freiheitsberaubung", tag:"stgb", group:"StGB Delikte", subgroup:"Allgemeine Delikte", geld:50000, stars:3, anmerkung:"Entzug Waffenlizenz", fib:false, gericht:true, strafregister:false, wanted:true },
+  { para:"§ 34a BDG", name:"Schutzhaft", tag:"stgb", group:"StGB Delikte", subgroup:"Allgemeine Delikte", geld:0, stars:4, anmerkung:"Gilt nicht als Vorstrafe & Entzug Waffenlizenz. Erfordert medizinisches Gutachten", fib:false, gericht:true, strafregister:false, wanted:true },
+  { para:"§ 6 StGB", name:"Raub", tag:"stgb", group:"StGB Delikte", subgroup:"Allgemeine Delikte", geld:30000, stars:2, anmerkung:"Entzug Waffenlizenz", fib:false, gericht:false, strafregister:false, wanted:false },
+  { para:"§ 7 StGB", name:"Wahlbehinderung", tag:"stgb", group:"StGB Delikte", subgroup:"Allgemeine Delikte", geld:50000, stars:3, anmerkung:"", fib:true, gericht:true, strafregister:false, wanted:true },
+  { para:"§ 7a StGB", name:"Wahlbehinderung (schwerer Fall)", tag:"stgb", group:"StGB Delikte", subgroup:"Allgemeine Delikte", geld:80000, stars:4, anmerkung:"", fib:true, gericht:true, strafregister:false, wanted:true },
+  { para:"§ 8 StGB", name:"Fälschung von Wahlunterlagen", tag:"stgb", group:"StGB Delikte", subgroup:"Allgemeine Delikte", geld:80000, stars:4, anmerkung:"", fib:true, gericht:true, strafregister:false, wanted:true },
+  { para:"§ 9 StGB", name:"Erpressung", tag:"stgb", group:"StGB Delikte", subgroup:"Allgemeine Delikte", geld:30000, stars:1, anmerkung:"Entzug Waffenlizenz", fib:false, gericht:false, strafregister:false, wanted:false },
+  { para:"§ 10 StGB", name:"Beleidigung", tag:"stgb", group:"StGB Delikte", subgroup:"Allgemeine Delikte", geld:10000, stars:0, anmerkung:"Antragsdelikt", fib:false, gericht:false, strafregister:false, wanted:false },
+  { para:"§ 10a StGB", name:"Beamtenbeleidigung", tag:"stgb", group:"StGB Delikte", subgroup:"Allgemeine Delikte", geld:20000, stars:1, anmerkung:"Antragsdelikt", fib:false, gericht:false, strafregister:false, wanted:false },
+  { para:"§ 10b StGB", name:"Üble Nachrede", tag:"stgb", group:"StGB Delikte", subgroup:"Allgemeine Delikte", geld:10000, stars:0, anmerkung:"", fib:false, gericht:false, strafregister:false, wanted:false },
+  { para:"§ 11 StGB", name:"Nötigung", tag:"stgb", group:"StGB Delikte", subgroup:"Allgemeine Delikte", geld:16000, stars:0, anmerkung:"", fib:false, gericht:false, strafregister:false, wanted:false },
+  { para:"§ 11a StGB", name:"Sexuelle Belästigung", tag:"stgb", group:"StGB Delikte", subgroup:"Allgemeine Delikte", geld:40000, stars:3, anmerkung:"Einzelhaft", fib:false, gericht:false, strafregister:false, wanted:false },
+  { para:"§ 11b StGB", name:"Menschenhandel", tag:"stgb", group:"StGB Delikte", subgroup:"Allgemeine Delikte", geld:65000, stars:4, anmerkung:"Entzug Waffenlizenz, schwere wird durch Richter entschieden & Bei Organhandel MD kontaktieren", fib:false, gericht:true, strafregister:false, wanted:true },
+  { para:"§ 12 StGB", name:"Betrug", tag:"stgb", group:"StGB Delikte", subgroup:"Allgemeine Delikte", geld:50000, stars:3, anmerkung:"Antragsdelikt", fib:true, gericht:true, strafregister:false, wanted:true },
+  { para:"§ 12a StGB", name:"Urkundenfälschung", tag:"stgb", group:"StGB Delikte", subgroup:"Allgemeine Delikte", geld:50000, stars:3, anmerkung:"", fib:true, gericht:true, strafregister:false, wanted:true },
+  { para:"§ 13 StGB", name:"Drohung", tag:"stgb", group:"StGB Delikte", subgroup:"Allgemeine Delikte", geld:20000, stars:1, anmerkung:"Antragsdelikt & Entzug Waffenlizenz", fib:false, gericht:false, strafregister:false, wanted:false },
+  { para:"§ 13a StGB", name:"Gefährliche Drohung", tag:"stgb", group:"StGB Delikte", subgroup:"Allgemeine Delikte", geld:35000, stars:2, anmerkung:"", fib:false, gericht:false, strafregister:false, wanted:false },
+  { para:"§ 14 StGB", name:"Diebstahl", tag:"stgb", group:"StGB Delikte", subgroup:"Allgemeine Delikte", geld:25000, stars:1, anmerkung:"", fib:false, gericht:false, strafregister:false, wanted:false },
+  { para:"§ 15 StGB", name:"Nachstellung", tag:"stgb", group:"StGB Delikte", subgroup:"Allgemeine Delikte", geld:30000, stars:1, anmerkung:"", fib:false, gericht:false, strafregister:false, wanted:false },
+  { para:"§ 15a StGB", name:"Schwerwiegende Nachstellung", tag:"stgb", group:"StGB Delikte", subgroup:"Allgemeine Delikte", geld:60000, stars:2, anmerkung:"Entzug Waffenlizenz", fib:false, gericht:false, strafregister:false, wanted:false },
+  { para:"§ 16 StGB", name:"Unterlassene Hilfeleistung", tag:"stgb", group:"StGB Delikte", subgroup:"Allgemeine Delikte", geld:40000, stars:1, anmerkung:"", fib:false, gericht:false, strafregister:false, wanted:false },
+  { para:"§ 16a StGB", name:"Behinderung von hilfeleistenden Personen", tag:"stgb", group:"StGB Delikte", subgroup:"Allgemeine Delikte", geld:50000, stars:2, anmerkung:"", fib:false, gericht:false, strafregister:false, wanted:false },
+  // StGB - Vergehen an Beamten
+  { para:"§ 17 StGB", name:"Widerstand gegen Vollstreckungsbeamte", tag:"stgb", group:"StGB Delikte", subgroup:"Vergehen an Beamten", geld:50000, stars:2, anmerkung:"", fib:false, gericht:false, strafregister:false, wanted:false },
+  { para:"§ 17a StGB", name:"Missachtung behördlicher Anweisungen", tag:"stgb", group:"StGB Delikte", subgroup:"Vergehen an Beamten", geld:20000, stars:0, anmerkung:"", fib:false, gericht:false, strafregister:false, wanted:false },
+  { para:"§ 18a StGB", name:"Betreten eines Sperrgebiets", tag:"stgb", group:"StGB Delikte", subgroup:"Vergehen an Beamten", geld:60000, stars:3, anmerkung:"Antragsdelikt", fib:false, gericht:true, strafregister:false, wanted:true },
+  { para:"§ 18b StGB", name:"Betreten von Sicherheitsbereichen", tag:"stgb", group:"StGB Delikte", subgroup:"Vergehen an Beamten", geld:80000, stars:5, anmerkung:"Wird nur auf Antrag Verfolgt!", fib:true, gericht:true, strafregister:false, wanted:true },
+  { para:"§ 18c StGB", name:"Betreten von Dienstfahrzeugen", tag:"stgb", group:"StGB Delikte", subgroup:"Vergehen an Beamten", geld:30000, stars:1, anmerkung:"", fib:false, gericht:false, strafregister:false, wanted:false },
+  { para:"§ 19 StGB", name:"Behinderung von Ermittlungsverfahren", tag:"stgb", group:"StGB Delikte", subgroup:"Vergehen an Beamten", geld:50000, stars:5, anmerkung:"Schwere wird durch Richter entschieden bis ★★★★★", fib:false, gericht:true, strafregister:false, wanted:true },
+  { para:"§ 20 StGB", name:"Behinderung von Rettungskräften", tag:"stgb", group:"StGB Delikte", subgroup:"Vergehen an Beamten", geld:30000, stars:3, anmerkung:"", fib:false, gericht:false, strafregister:false, wanted:false },
+  { para:"§ 21 StGB", name:"Verhalten in Gebäuden von staatl. Orgas", tag:"stgb", group:"StGB Delikte", subgroup:"Vergehen an Beamten", geld:20000, stars:0, anmerkung:"", fib:false, gericht:false, strafregister:false, wanted:false },
+  { para:"§ 22 StGB", name:"Verhalten gegen Einsatzhunde", tag:"stgb", group:"StGB Delikte", subgroup:"Vergehen an Beamten", geld:26000, stars:1, anmerkung:"", fib:false, gericht:false, strafregister:false, wanted:false },
+  { para:"§ 23 StGB", name:"Gefangenenbefreiung", tag:"stgb", group:"StGB Delikte", subgroup:"Vergehen an Beamten", geld:60000, stars:4, anmerkung:"Entzug Waffenlizenz", fib:false, gericht:true, strafregister:false, wanted:true },
+  { para:"§ 24 StGB", name:"Gefangenenmeuterei", tag:"stgb", group:"StGB Delikte", subgroup:"Vergehen an Beamten", geld:40000, stars:3, anmerkung:"", fib:false, gericht:false, strafregister:false, wanted:false },
+  // StGB - Vergehen in der Öffentlichkeit
+  { para:"§ 25 StGB", name:"Amtsanmaßung", tag:"stgb", group:"StGB Delikte", subgroup:"Vergehen in der Öffentlichkeit", geld:60000, stars:5, anmerkung:"", fib:true, gericht:true, strafregister:false, wanted:true },
+  { para:"§ 26 StGB", name:"Vermummung in der Öffentlichkeit", tag:"stgb", group:"StGB Delikte", subgroup:"Vergehen in der Öffentlichkeit", geld:25000, stars:0, anmerkung:"", fib:false, gericht:false, strafregister:false, wanted:false },
+  { para:"§ 27 StGB", name:"Verweigerung der Identitätsfeststellung", tag:"stgb", group:"StGB Delikte", subgroup:"Vergehen in der Öffentlichkeit", geld:20000, stars:0, anmerkung:"", fib:false, gericht:false, strafregister:false, wanted:false },
+  { para:"§ 28 StGB", name:"Durchbrechung von Absperrungen", tag:"stgb", group:"StGB Delikte", subgroup:"Vergehen in der Öffentlichkeit", geld:40000, stars:2, anmerkung:"", fib:false, gericht:false, strafregister:false, wanted:false },
+  { para:"§ 29 StGB", name:"Illegales Glücksspiel", tag:"stgb", group:"StGB Delikte", subgroup:"Vergehen in der Öffentlichkeit", geld:50000, stars:5, anmerkung:"Schwere wird durch Richter entschieden bis ★★★★★", fib:false, gericht:false, strafregister:false, wanted:false },
+  { para:"§ 30 StGB", name:"Sachbeschädigung", tag:"stgb", group:"StGB Delikte", subgroup:"Vergehen in der Öffentlichkeit", geld:10000, stars:0, anmerkung:"Antragsdelikt", fib:false, gericht:false, strafregister:false, wanted:false },
+  { para:"§ 30a StGB", name:"Sachbeschädigung an Behördeneigentum", tag:"stgb", group:"StGB Delikte", subgroup:"Vergehen in der Öffentlichkeit", geld:40000, stars:2, anmerkung:"", fib:false, gericht:false, strafregister:false, wanted:false },
+  { para:"§ 31 StGB", name:"Hehlerei", tag:"stgb", group:"StGB Delikte", subgroup:"Vergehen in der Öffentlichkeit", geld:40000, stars:2, anmerkung:"", fib:false, gericht:true, strafregister:false, wanted:true },
+  { para:"§ 32 StGB", name:"Hausfriedensbruch", tag:"stgb", group:"StGB Delikte", subgroup:"Vergehen in der Öffentlichkeit", geld:30000, stars:2, anmerkung:"Antragsdelikt", fib:false, gericht:false, strafregister:false, wanted:false },
+  { para:"§ 33 StGB", name:"Vortäuschen einer Straftat", tag:"stgb", group:"StGB Delikte", subgroup:"Vergehen in der Öffentlichkeit", geld:20000, stars:1, anmerkung:"", fib:false, gericht:false, strafregister:false, wanted:false },
+  { para:"§ 33a StGB", name:"Androhung der Begehung einer Straftat", tag:"stgb", group:"StGB Delikte", subgroup:"Vergehen in der Öffentlichkeit", geld:30000, stars:1, anmerkung:"Antragsdelikt", fib:false, gericht:false, strafregister:false, wanted:false },
+  { para:"§ 34 StGB", name:"Meineid", tag:"stgb", group:"StGB Delikte", subgroup:"Vergehen in der Öffentlichkeit", geld:70000, stars:5, anmerkung:"Verfolgung auf Antrag des vorsitzenden Richters", fib:false, gericht:true, strafregister:false, wanted:true },
+  { para:"§ 34a StGB", name:"Falsche uneidliche Aussage", tag:"stgb", group:"StGB Delikte", subgroup:"Vergehen in der Öffentlichkeit", geld:50000, stars:3, anmerkung:"", fib:false, gericht:false, strafregister:false, wanted:false },
+  { para:"§ 35 StGB", name:"Besitz von Behördeneigentum", tag:"stgb", group:"StGB Delikte", subgroup:"Vergehen in der Öffentlichkeit", geld:80000, stars:5, anmerkung:"Entzug Waffenlizenz (bei Dienstwaffen)", fib:true, gericht:true, strafregister:false, wanted:true },
+  { para:"§ 36 StGB", name:"Besitz illegaler Gegenstände", tag:"stgb", group:"StGB Delikte", subgroup:"Vergehen in der Öffentlichkeit", geld:45000, stars:2, anmerkung:"", fib:false, gericht:false, strafregister:false, wanted:false },
+  { para:"§ 38 StGB", name:"Korruption", tag:"stgb", group:"StGB Delikte", subgroup:"Vergehen in der Öffentlichkeit", geld:100000, stars:5, anmerkung:"Schwere wird durch Richter entschieden bis ★★★★★", fib:true, gericht:true, strafregister:false, wanted:true },
+  { para:"§ 40 StGB", name:"Außergerichtliche Falschaussage", tag:"stgb", group:"StGB Delikte", subgroup:"Vergehen in der Öffentlichkeit", geld:50000, stars:5, anmerkung:"Schwere wird durch Richter entschieden bis ★★★★★", fib:false, gericht:true, strafregister:false, wanted:true },
+  { para:"§ 41 StGB", name:"Missbräuchlicher Notruf", tag:"stgb", group:"StGB Delikte", subgroup:"Vergehen in der Öffentlichkeit", geld:20000, stars:1, anmerkung:"", fib:false, gericht:false, strafregister:false, wanted:false },
+  { para:"§ 42 StGB", name:"Verstoß gegen Regelungen der Defcon", tag:"stgb", group:"StGB Delikte", subgroup:"Vergehen in der Öffentlichkeit", geld:60000, stars:3, anmerkung:"", fib:false, gericht:false, strafregister:false, wanted:false },
+  { para:"§ 42.3 StGB", name:"Verstoß gegen Regelungen der Defcon (schwerer Fall)", tag:"stgb", group:"StGB Delikte", subgroup:"Vergehen in der Öffentlichkeit", geld:80000, stars:4, anmerkung:"", fib:false, gericht:false, strafregister:false, wanted:false },
+  { para:"§ 43 StGB", name:"Weitergabe von Lizenzen", tag:"stgb", group:"StGB Delikte", subgroup:"Vergehen in der Öffentlichkeit", geld:50000, stars:3, anmerkung:"", fib:true, gericht:true, strafregister:false, wanted:true },
+  { para:"§ 44 StGB", name:"Privater An- und Verkauf von Arzneimitteln", tag:"stgb", group:"StGB Delikte", subgroup:"Vergehen in der Öffentlichkeit", geld:60000, stars:3, anmerkung:"", fib:false, gericht:false, strafregister:false, wanted:false },
+  { para:"§ 44a StGB", name:"Wiederholter Privater An- und Verkauf von Arzneimitteln", tag:"stgb", group:"StGB Delikte", subgroup:"Vergehen in der Öffentlichkeit", geld:80000, stars:5, anmerkung:"", fib:true, gericht:true, strafregister:false, wanted:true },
+  { para:"§ 45 StGB", name:"Ungenehmigte Versammlungen", tag:"stgb", group:"StGB Delikte", subgroup:"Vergehen in der Öffentlichkeit", geld:25000, stars:2, anmerkung:"", fib:false, gericht:false, strafregister:false, wanted:false },
+  { para:"§ 45a StGB", name:"Bildung bewaffneter Versammlung", tag:"stgb", group:"StGB Delikte", subgroup:"Vergehen in der Öffentlichkeit", geld:70000, stars:3, anmerkung:"Entzug Waffenlizenz", fib:true, gericht:true, strafregister:false, wanted:true },
+  { para:"§ 46 StGB", name:"Amtsmissbrauch", tag:"stgb", group:"StGB Delikte", subgroup:"Vergehen in der Öffentlichkeit", geld:75000, stars:4, anmerkung:"Schwere wird durch Richter entschieden bis ★★★★★", fib:true, gericht:true, strafregister:false, wanted:true },
+  { para:"§ 47 StGB", name:"Umgehen der Meldepflicht von Straftaten", tag:"stgb", group:"StGB Delikte", subgroup:"Vergehen in der Öffentlichkeit", geld:30000, stars:1, anmerkung:"", fib:false, gericht:false, strafregister:false, wanted:false },
+  { para:"§ 48 StGB", name:"Erregung öffentlichen Ärgernisses", tag:"stgb", group:"StGB Delikte", subgroup:"Vergehen in der Öffentlichkeit", geld:20000, stars:0, anmerkung:"", fib:false, gericht:false, strafregister:false, wanted:false },
+  { para:"§ 49 StGB", name:"Hochverrat", tag:"stgb", group:"StGB Delikte", subgroup:"Vergehen in der Öffentlichkeit", geld:100000, stars:5, anmerkung:"", fib:true, gericht:true, strafregister:false, wanted:true },
+  { para:"§ 50 StGB", name:"Dienstvergehen", tag:"stgb", group:"StGB Delikte", subgroup:"Vergehen in der Öffentlichkeit", geld:60000, stars:3, anmerkung:"Schwere wird durch Richter entschieden bis ★★★★★", fib:true, gericht:true, strafregister:false, wanted:true },
+  { para:"§ 50a StGB", name:"Schweres Dienstvergehen", tag:"stgb", group:"StGB Delikte", subgroup:"Vergehen in der Öffentlichkeit", geld:80000, stars:5, anmerkung:"Schwere wird durch Richter entschieden bis ★★★★★", fib:true, gericht:true, strafregister:false, wanted:true },
+  { para:"§ 54 StGB", name:"Terroristische Handlungen", tag:"stgb", group:"StGB Delikte", subgroup:"Vergehen in der Öffentlichkeit", geld:100000, stars:5, anmerkung:"Entzug Waffenlizenz", fib:true, gericht:true, strafregister:false, wanted:true },
+  { para:"§ 55 StGB", name:"Terrorismusfinanzierung", tag:"stgb", group:"StGB Delikte", subgroup:"Vergehen in der Öffentlichkeit", geld:65000, stars:3, anmerkung:"Entzug Waffenlizenz", fib:false, gericht:true, strafregister:false, wanted:true },
+  { para:"§ 56 StGB", name:"Missbrauch der Werbung", tag:"stgb", group:"StGB Delikte", subgroup:"Vergehen in der Öffentlichkeit", geld:50000, stars:5, anmerkung:"", fib:false, gericht:true, strafregister:false, wanted:true },
+  { para:"§ 57 StGB", name:"Inverkehrbringen von Falschgeld", tag:"stgb", group:"StGB Delikte", subgroup:"Vergehen in der Öffentlichkeit", geld:100000, stars:5, anmerkung:"", fib:false, gericht:true, strafregister:false, wanted:true },
+  { para:"Fehlendes Lichtbild", name:"Fehlendes Lichtbild", tag:"stgb", group:"StGB Delikte", subgroup:"Vergehen in der Öffentlichkeit", geld:25000, stars:0, anmerkung:"Bei Wiederholung ab 2x - 2 Wanteds", fib:false, gericht:false, strafregister:false, wanted:false },
+  // BtMG
+  { para:"§ 3 BtMG", name:"Herstellung von Betäubungsmitteln", tag:"btmg", group:"BtMG Delikte", subgroup:"", geld:30000, stars:3, anmerkung:"", fib:true, gericht:true, strafregister:false, wanted:true },
+  { para:"§ 4 BtMG", name:"Ankauf und Verkauf von Betäubungsmitteln", tag:"btmg", group:"BtMG Delikte", subgroup:"", geld:40000, stars:3, anmerkung:"", fib:false, gericht:false, strafregister:false, wanted:false },
+  { para:"§ 5 BtMG", name:"Verkauf von Medizinprodukten", tag:"btmg", group:"BtMG Delikte", subgroup:"", geld:20000, stars:3, anmerkung:"", fib:true, gericht:true, strafregister:false, wanted:true },
+  { para:"§ 6 BtMG", name:"Herausgabe von Medizinprodukten", tag:"btmg", group:"BtMG Delikte", subgroup:"", geld:10000, stars:0, anmerkung:"Weedkonsum ist straffrei", fib:false, gericht:false, strafregister:false, wanted:false },
+  { para:"§ 7 BtMG", name:"Besitz von Betäubungsmitteln", tag:"btmg", group:"BtMG Delikte", subgroup:"", geld:30000, stars:2, anmerkung:"", fib:false, gericht:false, strafregister:false, wanted:false },
+  { para:"§ 7a BtMG", name:"Besitz von Betäubungsmitteln (schwerer Fall)", tag:"btmg", group:"BtMG Delikte", subgroup:"", geld:50000, stars:3, anmerkung:"", fib:false, gericht:false, strafregister:false, wanted:false },
+  // WaffG
+  { para:"§ 2 WaffG", name:"Tragen einer Waffe/Munition ohne nötige Lizenz", tag:"waffg", group:"WaffG Delikte", subgroup:"", geld:40000, stars:3, anmerkung:"Entzug Waffenlizenz", fib:false, gericht:false, strafregister:false, wanted:false },
+  { para:"§ 5 WaffG", name:"Besitz illegale Waffe/Munition", tag:"waffg", group:"WaffG Delikte", subgroup:"", geld:60000, stars:3, anmerkung:"Entzug Waffenlizenz", fib:false, gericht:false, strafregister:false, wanted:false },
+  { para:"§ 5.3 WaffG", name:"Besitz von Waffenteilen", tag:"waffg", group:"WaffG Delikte", subgroup:"", geld:80000, stars:3, anmerkung:"Entzug Waffenlizenz", fib:false, gericht:false, strafregister:false, wanted:false },
+  { para:"§ 7 WaffG", name:"Unerlaubte Nutzung von Waffen", tag:"waffg", group:"WaffG Delikte", subgroup:"", geld:80000, stars:4, anmerkung:"Entzug Waffenlizenz", fib:false, gericht:false, strafregister:false, wanted:false },
+  { para:"§ 26 Abs 4 BDG", name:"Verletzung der Auskunftpflicht", tag:"waffg", group:"WaffG Delikte", subgroup:"", geld:50000, stars:3, anmerkung:"Entzug Waffenlizenz", fib:false, gericht:false, strafregister:false, wanted:false },
+  { para:"§ 10 WaffG", name:"Illegaler Waffenhandel", tag:"waffg", group:"WaffG Delikte", subgroup:"", geld:100000, stars:5, anmerkung:"Entzug Waffenlizenz", fib:true, gericht:true, strafregister:false, wanted:true },
+  // StVO
+  { para:"§ 1.1 StVO", name:"Missachtung von Sonderrechten", tag:"stvo", group:"StVO Delikte", subgroup:"", geld:10000, stars:0, anmerkung:"", fib:false, gericht:false, strafregister:false, wanted:false },
+  { para:"§ 2.8 StVO", name:"Fehlen eines Verbands oder Reparaturkits", tag:"stvo", group:"StVO Delikte", subgroup:"", geld:10000, stars:0, anmerkung:"", fib:false, gericht:false, strafregister:false, wanted:false },
+  { para:"§ 2.9 StVO", name:"Ausnutzung der Hupe", tag:"stvo", group:"StVO Delikte", subgroup:"", geld:30000, stars:0, anmerkung:"", fib:false, gericht:false, strafregister:false, wanted:false },
+  { para:"§ 3.5a StVO", name:"Geschwindigkeitsüberschreitung 27–50 km/h", tag:"stvo", group:"StVO Delikte", subgroup:"", geld:20000, stars:0, anmerkung:"", fib:false, gericht:false, strafregister:false, wanted:false },
+  { para:"§ 3.5b StVO", name:"Geschwindigkeitsüberschreitung 51–100 km/h", tag:"stvo", group:"StVO Delikte", subgroup:"", geld:30000, stars:1, anmerkung:"", fib:false, gericht:false, strafregister:false, wanted:false },
+  { para:"§ 3.5c StVO", name:"Geschwindigkeitsüberschreitung 101–200 km/h", tag:"stvo", group:"StVO Delikte", subgroup:"", geld:50000, stars:2, anmerkung:"Entzug Führerschein", fib:false, gericht:false, strafregister:false, wanted:false },
+  { para:"§ 3.5d StVO", name:"Geschwindigkeitsüberschreitung ab 201 km/h", tag:"stvo", group:"StVO Delikte", subgroup:"", geld:70000, stars:3, anmerkung:"Entzug Führerschein", fib:false, gericht:true, strafregister:false, wanted:true },
+  { para:"§ 4.1 StVO", name:"Missachtung der Vorfahrtsregeln", tag:"stvo", group:"StVO Delikte", subgroup:"", geld:15500, stars:0, anmerkung:"", fib:false, gericht:false, strafregister:false, wanted:false },
+  { para:"§ 5.3b StVO", name:"Missachtung von Parkverbotszonen", tag:"stvo", group:"StVO Delikte", subgroup:"", geld:10500, stars:0, anmerkung:"Abschleppen des KFZ", fib:false, gericht:false, strafregister:false, wanted:false },
+  { para:"§ 5.3c StVO", name:"Missachtung von Parkverbotszonen (schwerer Fall)", tag:"stvo", group:"StVO Delikte", subgroup:"", geld:45000, stars:0, anmerkung:"Abschleppen des KFZ", fib:false, gericht:false, strafregister:false, wanted:false },
+  { para:"§ 6 StVO", name:"Missachtung des Fahrzeugzustands", tag:"stvo", group:"StVO Delikte", subgroup:"", geld:25000, stars:1, anmerkung:"", fib:false, gericht:false, strafregister:false, wanted:false },
+  { para:"§ 8 StVO", name:"Unerlaubtes Entfernen vom Unfallort", tag:"stvo", group:"StVO Delikte", subgroup:"", geld:12000, stars:0, anmerkung:"", fib:false, gericht:false, strafregister:false, wanted:false },
+  { para:"§ 9 StVO", name:"Missachtung von Verkehrszeichen", tag:"stvo", group:"StVO Delikte", subgroup:"", geld:30000, stars:0, anmerkung:"", fib:false, gericht:false, strafregister:false, wanted:false },
+  { para:"§ 10 StVO", name:"Gefährlicher Eingriff in den Straßenverkehr", tag:"stvo", group:"StVO Delikte", subgroup:"", geld:40000, stars:2, anmerkung:"Entzug Führerschein", fib:false, gericht:false, strafregister:false, wanted:false },
+  { para:"§ 11.1 StVO (bis Vis. 7)", name:"Fahren eines unangemeldeten Fahrzeuges", tag:"stvo", group:"StVO Delikte", subgroup:"", geld:40000, stars:0, anmerkung:"Bis Visumsstufe 7", fib:false, gericht:false, strafregister:false, wanted:false },
+  { para:"§ 11.1 StVO (ab Vis. 8)", name:"Fahren eines unangemeldeten Fahrzeuges", tag:"stvo", group:"StVO Delikte", subgroup:"", geld:50000, stars:1, anmerkung:"Ab Visumsstufe 8", fib:false, gericht:false, strafregister:false, wanted:false },
+  { para:"§ 11.2 StVO", name:"Wiederholtes Fahren eines unangemeldeten Fahrzeugs", tag:"stvo", group:"StVO Delikte", subgroup:"", geld:50000, stars:2, anmerkung:"Entzug Führerschein", fib:false, gericht:false, strafregister:false, wanted:false },
+  { para:"§ 14.9 StVO", name:"Geisterfahrt", tag:"stvo", group:"StVO Delikte", subgroup:"", geld:40000, stars:2, anmerkung:"", fib:false, gericht:false, strafregister:false, wanted:false },
+  { para:"§ 19 StVO", name:"Verstoß Sperrfläche Elektroroller", tag:"stvo", group:"StVO Delikte", subgroup:"", geld:30000, stars:0, anmerkung:"", fib:false, gericht:false, strafregister:false, wanted:false },
+  // ZGB
+  { para:"§17 Abs. 2 ZGB", name:"Verstoß gegen die Meldepflicht", tag:"zgb", group:"ZGB Delikte", subgroup:"Steuern", geld:20000, stars:0, anmerkung:"", fib:false, gericht:false, strafregister:false, wanted:false },
+  { para:"§ 19 Abs.6 ZGB I", name:"Steuerhinterziehung (Mahnstufe I)", tag:"zgb", group:"ZGB Delikte", subgroup:"Steuern", geld:10000, stars:0, anmerkung:"", fib:false, gericht:false, strafregister:false, wanted:false },
+  { para:"§ 19 Abs.6 ZGB II", name:"Steuerhinterziehung (Mahnstufe II)", tag:"zgb", group:"ZGB Delikte", subgroup:"Steuern", geld:25000, stars:1, anmerkung:"", fib:false, gericht:false, strafregister:false, wanted:false },
+  { para:"§ 19 Abs.6 ZGB III", name:"Steuerhinterziehung (Mahnstufe III)", tag:"zgb", group:"ZGB Delikte", subgroup:"Steuern", geld:50000, stars:2, anmerkung:"", fib:false, gericht:false, strafregister:false, wanted:false },
+  { para:"§ 19 Abs.6 ZGB IV", name:"Steuerhinterziehung (Mahnstufe IV)", tag:"zgb", group:"ZGB Delikte", subgroup:"Steuern", geld:100000, stars:3, anmerkung:"Geschäft wird Versiegelt", fib:false, gericht:false, strafregister:false, wanted:false },
+  { para:"§ 42 ZGB", name:"Jagen ohne gültige Lizenz", tag:"zgb", group:"ZGB Delikte", subgroup:"Tier", geld:80000, stars:4, anmerkung:"Sperre 14 Tage Waffenlizenz & Jagdlizenz", fib:true, gericht:true, strafregister:false, wanted:true },
+  { para:"§ 43 ZGB", name:"Töten von Tieren", tag:"zgb", group:"ZGB Delikte", subgroup:"Tier", geld:70000, stars:3, anmerkung:"Entzug Waffenlizenz & Jagdlizenz", fib:false, gericht:true, strafregister:false, wanted:true },
+  { para:"§ 43 Abs. 4 ZGB", name:"Töten von Tieren (schwerer Fall)", tag:"zgb", group:"ZGB Delikte", subgroup:"Tier", geld:100000, stars:5, anmerkung:"Entzug Waffenlizenz & Jagdlizenz", fib:false, gericht:true, strafregister:false, wanted:true },
+];
+// ============================================================
+
+const MAX_WANTED = 5;
+
+let favorites = new Set();
+let selected = new Set();
+let showFavOnly = false;
+
+// HELPERS
+function formatGeld(g) {
+  if (!g) return null;
+  return g.toLocaleString('de-DE') + ' $';
+}
+function renderStars(n) {
+  if (!n || n === 0) return '<span class="stars none">-,-</span>';
+  return '<span class="stars">' + '★'.repeat(n) + '</span>';
+}
+function tagHTML(t) {
+  return `<span class="law-tag tag-${t}">${t.toUpperCase()}</span>`;
+}
+function badge(val) {
+  if (val) return '<span class="badge badge-yes">Ja</span>';
+  return '<span class="badge badge-no">Nein</span>';
+}
+
+// Gesamte Wanted-Sterne aus aktueller Auswahl
+function getTotalWanted() {
+  return LAWS.filter(l => selected.has(l.para)).reduce((a, l) => a + (l.stars || 0), 0);
+}
+
+// Ob eine weitere Row wählbar wäre (für capped-Styling)
+function wouldExceed(law) {
+  if (selected.has(law.para)) return false; // bereits gewählt → immer abwählbar
+  return getTotalWanted() + (law.stars || 0) > MAX_WANTED;
+}
+
+function getFiltered() {
+  const q = document.getElementById('search').value.toLowerCase();
+
+  let arr = LAWS.filter(l => {
+    if (showFavOnly && !favorites.has(l.para)) return false;
+    if (q && !l.para.toLowerCase().includes(q) && !l.name.toLowerCase().includes(q) && !(l.anmerkung||'').toLowerCase().includes(q)) return false;
+    return true;
+  });
+
+  return arr;
+}
+
+function render() {
+  const arr = getFiltered();
+  const tbody = document.getElementById('law-tbody');
+  const empty = document.getElementById('empty-state');
+  document.getElementById('total-count').textContent = LAWS.length;
+  document.getElementById('fav-count').textContent = favorites.size;
+  document.getElementById('sel-count').textContent = selected.size;
+
+  if (arr.length === 0) {
+    tbody.innerHTML = '';
+    empty.style.display = 'block';
+    return;
+  }
+  empty.style.display = 'none';
+
+  let html = '';
+  let lastGroup = null;
+  let lastSubgroup = null;
+
+  arr.forEach((l, i) => {
+    if (l.group !== lastGroup) {
+      const color = {stgb:'var(--stgb)',btmg:'var(--btmg)',waffg:'var(--waffg)',stvo:'var(--stvo)',zgb:'var(--zgb)'}[l.tag] || 'var(--text3)';
+      html += `<tr class="subgroup-row"><td colspan="9" style="color:${color};border-left:3px solid ${color}">${l.group}</td></tr>`;
+      lastGroup = l.group;
+      lastSubgroup = null;
+    }
+    if (l.subgroup && l.subgroup !== lastSubgroup) {
+      html += `<tr class="subgroup-row"><td colspan="9" style="padding-left:32px">↳ ${l.subgroup}</td></tr>`;
+      lastSubgroup = l.subgroup;
+    }
+
+    const isSel = selected.has(l.para);
+    const isFav = favorites.has(l.para);
+    const geldFmt = l.geld ? formatGeld(l.geld) : '-,-';
+    const geldClass = l.geld ? 'geldstrafe' : 'geldstrafe none';
+    const rowClass = isSel ? 'selected' : '';
+    const isCapped = wouldExceed(l);
+
+    html += `<tr class="${rowClass}" data-para="${l.para}" data-capped="${isCapped}" style="animation-delay:${Math.min(i,30)*0.01}s">
+      <td class="para">${l.para}</td>
+      <td class="law-name">${tagHTML(l.tag)} ${l.name}
+        <button class="star-fav ${isFav?'active':''}" data-para="${l.para}" title="Favorit">★</button>
+      </td>
+      <td class="anmerkung">${l.anmerkung || '—'}</td>
+      <td>${badge(l.fib)}</td>
+      <td>${badge(l.gericht)}</td>
+      <td>${badge(l.strafregister)}</td>
+      <td>—</td>
+      <td class="${geldClass}">${geldFmt}</td>
+      <td>${renderStars(l.stars)}</td>
+    </tr>`;
+  });
+
+  tbody.innerHTML = html;
+
+  tbody.querySelectorAll('tr[data-para]').forEach(row => {
+    row.addEventListener('click', e => {
+      if (e.target.classList.contains('star-fav')) return;
+      const p = row.dataset.para;
+      const law = LAWS.find(x => x.para === p);
+      if (!law) return;
+
+      if (selected.has(p)) {
+        selected.delete(p);
+      } else {
+        selected.add(p);
+      }
+      updateBottomBar();
+      render();
+    });
+  });
+
+  tbody.querySelectorAll('.star-fav').forEach(btn => {
+    btn.addEventListener('click', e => {
+      e.stopPropagation();
+      const p = btn.dataset.para;
+      if (favorites.has(p)) favorites.delete(p);
+      else favorites.add(p);
+      render();
+    });
+  });
+}
+
+function updateBottomBar() {
+  const count = selected.size;
+  document.getElementById('bb-count').textContent = count;
+  document.getElementById('sel-count').textContent = count;
+
+  const selLaws = LAWS.filter(l => selected.has(l.para));
+  const preview = selLaws.length > 0 ? selLaws.map(l => l.para).join(', ') : '—';
+  document.getElementById('bb-preview').textContent = preview;
+
+  // Wanted-Sterne aktualisieren — maximal 5 anzeigen, egal wie viele gewählt
+  const rawWanted = getTotalWanted();
+  const totalWanted = Math.min(rawWanted, MAX_WANTED);
+  for (let s = 1; s <= 5; s++) {
+    const el = document.getElementById('wstar' + s);
+    el.classList.toggle('on', s <= totalWanted);
+  }
+  document.getElementById('wstar-num').textContent = totalWanted + '/5';
+
+  // Cap-Warnung
+  document.getElementById('bb-cap-pill').classList.toggle('show', totalWanted >= MAX_WANTED);
+}
+
+// COPY
+document.getElementById('btn-copy').addEventListener('click', () => {
+  const selLaws = LAWS.filter(l => selected.has(l.para));
+  const date = new Date();
+  const dateStr = date.toLocaleDateString('de-DE');
+  const timeStr = date.toLocaleTimeString('de-DE');
+  const lines = selLaws.map(l => l.para).join(',') + ' ' + dateStr + ' ' + timeStr;
+  navigator.clipboard.writeText(lines).then(() => {
+    const toast = document.getElementById('toast');
+    toast.classList.add('show');
+    setTimeout(() => toast.classList.remove('show'), 2000);
+  });
+});
+
+document.getElementById('btn-del').addEventListener('click', () => {
+  selected.clear();
+  updateBottomBar();
+  render();
+});
+
+document.getElementById('btn-clear-sel').addEventListener('click', () => {
+  selected.clear();
+  updateBottomBar();
+  render();
+});
+
+document.getElementById('btn-fav').addEventListener('click', () => {
+  showFavOnly = !showFavOnly;
+  document.getElementById('btn-fav').classList.toggle('active', showFavOnly);
+  render();
+});
+
+['search'].forEach(id => {
+  document.getElementById(id).addEventListener('input', render);
+  document.getElementById(id).addEventListener('change', render);
+});
+
+render();
+updateBottomBar();
+</script>
+</body>
+</html>
